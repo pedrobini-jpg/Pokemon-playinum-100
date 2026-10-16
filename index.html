@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171a2e">
+<title>Pokémon Platinum — 100% Tracker</title>
+<style>
+:root{--bg:#101321;--panel:#1b2035;--panel2:#242b45;--text:#f4f5ff;--muted:#b6bdd8;--line:#39415f;--accent:#8ee3f5;--gold:#ffd166;--green:#9be7a5;--red:#ff9b9b}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#171a2e,#0e1020);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:28px 18px 20px;background:radial-gradient(ellipse at top right,#39416a 0%,transparent 60%);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:auto}h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.08;margin:8px 0}h2{margin:0 0 12px;font-size:1.35rem}h3{margin:0 0 6px;font-size:1.02rem}.sub{color:var(--muted);max-width:760px}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:4px 10px;color:var(--accent);font-size:.82rem;margin:3px 4px 3px 0}
+main{max-width:1100px;margin:auto;padding:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 18px}.stat,.panel,.task{background:var(--panel);border:1px solid var(--line);border-radius:14px}.stat{padding:12px}.stat strong{display:block;font-size:1.35rem}.stat span{color:var(--muted);font-size:.82rem}
+.progress{height:10px;border-radius:99px;background:#303752;overflow:hidden;margin:10px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,#8ee3f5,#9be7a5);transition:width .2s}
+.toolbar{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin:16px 0}.toolbar input,.toolbar select,button{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px;font:inherit}button{cursor:pointer}button:hover{border-color:var(--accent)}.nav{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.nav button.active{background:var(--accent);color:#101321;border-color:var(--accent);font-weight:700}
+.notice{padding:13px 14px;background:#302b1b;border:1px solid #75602c;border-radius:12px;color:#fff0c2;margin:14px 0}.panel{padding:16px;margin:14px 0}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.tasks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.task{padding:12px;display:flex;gap:10px;align-items:flex-start}.task input{width:20px;height:20px;accent-color:#8ee3f5;flex-shrink:0;margin-top:3px}.task.done{opacity:.65}.task.done .tasktitle{text-decoration:line-through}.tasktitle{font-weight:700}.desc{color:var(--muted);font-size:.92rem;margin-top:3px}.tag{display:inline-block;font-size:.72rem;padding:2px 7px;border-radius:99px;margin-top:7px;background:#303752;color:var(--muted)}.tag.off{background:#4b252d;color:#ffc0c0}.tag.conditional{background:#4b3d20;color:#ffe09a}.hidden{display:none!important}.small{color:var(--muted);font-size:.86rem}.footer{color:var(--muted);font-size:.86rem;padding:20px 0 36px}details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.callout{background:#172c32;border:1px solid #2b6672;padding:12px;border-radius:10px}.danger{background:#351f2a;border-color:#7c3c4d}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.tasks,.two{grid-template-columns:1fr}main{padding:12px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="pill">Nintendo DS · Pokémon Platinum</div><div class="pill">Solo · sem hacks</div>
+<h1>Pokémon Platinum<br>100% Tracker</h1>
+<p class="sub">Um painel de conclusão para acompanhar a história, Pokédex, itens, atividades, Battle Frontier e extras. Marca o que já fez; o progresso fica salvo neste navegador.</p>
+</div></header>
+<main>
+<div class="notice"><b>Regra do teu desafio:</b> este guia assume um DSi XL, um cartucho de Pokémon Platinum e jogo legítimo, sem outro jogo, segundo console, cheats ou eventos antigos. O que exige troca, multiplayer, distribuição de evento ou serviço encerrado fica identificado para tu poderes esconder ou manter na lista.</div>
+<div class="stats">
+ <div class="stat"><strong id="doneCount">0</strong><span>objetivos concluídos</span></div>
+ <div class="stat"><strong id="totalCount">0</strong><span>objetivos visíveis</span></div>
+ <div class="stat"><strong id="percent">0%</strong><span>progresso visível</span></div>
+ <div class="stat"><strong id="sectionCount">0</strong><span>categorias</span></div>
+</div><div class="progress"><div class="bar" id="bar"></div></div>
+<div class="toolbar">
+<input id="search" placeholder="Buscar: item, rota, Pokémon, evento..." aria-label="Buscar">
+<select id="availability"><option value="all">Mostrar: tudo</option><option value="solo">Só possível no meu cartucho</option><option value="legit">Possível legitimamente (inclui trocas)</option><option value="unavailable">Indisponível hoje / evento encerrado</option></select>
+<select id="status"><option value="all">Progresso: todos</option><option value="todo">Pendentes</option><option value="done">Concluídos</option></select>
+</div>
+<div class="nav" id="nav"></div>
+<div class="section-head"><h2 id="currentTitle">Visão geral</h2><div><button id="markVisible">Marcar visíveis</button> <button id="clearVisible">Desmarcar visíveis</button></div></div>
+<p class="small" id="sectionDesc">Escolha uma categoria para ver tarefas e instruções.</p>
+<div id="content"></div>
+<div class="panel">
+<h2>Regras de conclusão (para não cair em pegadinha)</h2>
+<details open><summary>O que significa “100%” aqui?</summary><p>Não existe uma única definição universal. Este tracker separa a campanha principal, o pós-jogo e os objetivos de colecionador. Para uma conclusão extrema, também entram formas, decoração, fitas, itens, palavras do Easy Chat, registros de batalha e tarefas diárias. A lista é uma base prática e expansível; não vou fingir que cada coordenada de item escondido e cada um dos 493 Pokémon já está descrito individualmente nesta primeira versão.</p></details>
+<details><summary>O que não dá para obter só com o meu DSi XL?</summary><p>O DSi XL não se conecta diretamente a outros cartuchos para trocas sem outro console. Evoluções por troca (como Machamp, Gengar, Alakazam e Golem), Pokémon exclusivos de outras versões e alguns Pokémon que dependem de transferência ficam bloqueados sem ajuda externa. A conexão Nintendo Wi-Fi Connection oficial para DS foi encerrada em 20/05/2014; eventos de distribuição antigos não estão disponíveis pelo método original.</p></details>
+<details><summary>Eventos míticos: posso contar como legítimos?</summary><p>Darkrai, Shaymin e Arceus têm conteúdo/eventos específicos que dependem de itens de evento em Pokémon Platinum. Sem um item já recebido no cartucho, distribuição oficial ativa ou método alternativo, não são obtíveis pela jogabilidade normal atual. Este tracker não recomenda códigos, save editing ou servidores não oficiais como “legítimos”.</p></details>
+<details><summary>Salvar e usar no GitHub Pages</summary><p>Este é um único arquivo HTML. Salve como <code>index.html</code> num repositório GitHub e ative GitHub Pages em Settings → Pages → Deploy from a branch → main / root. O progresso fica no armazenamento local do navegador; não sincroniza automaticamente entre celular e PC. Use Exportar backup para guardar uma cópia.</p></details>
+</div>
+<div class="panel">
+<h2>Backup do progresso</h2><p class="small">Exporta/importa as marcações deste navegador. Guarda o JSON num lugar seguro.</p>
+<button id="export">Exportar backup</button> <label style="display:inline-block"><input id="importFile" type="file" accept=".json,application/json" hidden><button id="importBtn">Importar backup</button></label> <button id="reset">Apagar todo o progresso</button>
+<p id="backupMsg" class="small" aria-live="polite"></p>
+</div>
+<div class="footer">Feito para jogar sem pressa e sem hacks. Use as fontes de referência abaixo para conferir detalhes específicos de encontros, itens e pós-jogo; esta página funciona offline depois de salva.</div>
+</main>
+<script>
+const sections = [
+{id:"story",name:"1 · História e insígnias",desc:"Ordem recomendada da campanha principal; faça cada etapa antes de avançar para evitar perder itens e diálogos.",tasks:[
+["Começar a aventura e escolher o inicial","Twinleaf Town: escolha Turtwig, Chimchar ou Piplup; receba o Pokédex após o encontro com Rowan.","solo"],
+["Obter Pokétch","Jubilife City: conclua a tarefa dos três palhaços e receba o Pokétch.","solo"],
+["Vencer Roark — Coal Badge","Oreburgh Gym. Fraquezas de Rock: Water, Grass, Fighting, Ground e Steel.","solo"],
+["Desbloquear o uso de Rock Smash","Receba a HM06 e vença Roark; fora de batalha, use Rock Smash onde permitido.","solo"],
+["Resolver o primeiro conflito da Team Galactic","Floaroma Meadow e Valley Windworks: enfrente os Galactic Grunts e resgate o pai da menina.","solo"],
+["Vencer Gardenia — Forest Badge","Eterna Gym. Fire, Flying, Ice, Poison e Bug ajudam contra Grass.","solo"],
+["Receber bicicleta e explorar Cycling Road","Eterna City: pegue a Bicycle na loja depois do evento com a Team Galactic.","solo"],
+["Obter Explorer Kit","Eterna City: fale com o Underground Man para liberar o Underground.","solo"],
+["Resgatar o Pokémon no Eterna Building","Eterna Galactic Building: vença os membros da Team Galactic e o comandante Jupiter.","solo"],
+["Vencer Fantina — Relic Badge","Hearthome Gym. Ghost é fraco a Ghost e Dark; cuidado com golpes de status.","solo"],
+["Vencer Maylene — Cobble Badge","Veilstone Gym. Flying, Psychic e Fairy não existe nesta geração; use Psychic/Flying.","solo"],
+["Vencer Crasher Wake — Fen Badge","Pastoria Gym. Grass e Electric são bons contra Water.","solo"],
+["Receber Defog e usá-lo quando necessário","Great Marsh / Pastoria: encontre a HM05 e ensine a um Pokémon compatível para limpar neblina fora de batalha.","solo"],
+["Investigar Lake Valor","Após os eventos de Pastoria, vá ao Lake Valor e enfrente a Team Galactic.","solo"],
+["Vencer Byron — Mine Badge","Canalave Gym. Fire, Fighting e Ground vencem Steel; cuidado com Steelix.","solo"],
+["Explorar Iron Island e obter Riolu Egg","Canalave: pegue o barco até Iron Island, ajude Riley e receba o ovo de Riolu.","solo"],
+["Resolver Lake Acuity","Vá a Snowpoint/Lake Acuity conforme a história e acompanhe os eventos da Team Galactic.","solo"],
+["Vencer Candice — Icicle Badge","Snowpoint Gym. Fire, Fighting, Rock e Steel ajudam contra Ice.","solo"],
+["Explorar Mt. Coronet e Spear Pillar","Siga a rota da história, leve cura e espaço na equipe; enfrente Cyrus e avance até o Distortion World.","solo"],
+["Completar Distortion World e capturar Giratina","Resolva os puzzles de plataformas/rochas e prepare Poké Balls antes da batalha de Giratina.","solo"],
+["Vencer Volkner — Beacon Badge","Sunyshore Gym. Ground é excelente contra Electric; cuidado com cobertura de golpes.","solo"],
+["Obter HM07 Waterfall","Após os eventos do ginásio de Sunyshore, fale com Jasmine na praia norte da cidade.","solo"],
+["Atravessar Victory Road","Leve Surf, Strength, Rock Smash, Waterfall e Defog conforme os obstáculos; recolha itens e treine.","solo"],
+["Vencer Elite Four e Cynthia","Prepare cobertura contra Bug, Ground, Fire, Psychic e a equipe variada de Cynthia; salve antes da Liga.","solo"],
+["Entrar no Hall of Fame","Derrote Cynthia; isso libera grande parte do conteúdo de pós-jogo.","solo"]
+]},
+{id:"hm",name:"2 · HMs, TMs e ferramentas",desc:"Habilidades de campo e ferramentas que abrem caminhos. A compatibilidade varia por espécie.",tasks:[
+["HM01 Cut","Recebida de Cynthia na entrada de Eterna Forest; o uso fora de batalha exige a insígnia correspondente.","solo"],
+["HM02 Fly","Veilstone Galactic Warehouse, após avançar no evento da Team Galactic.","solo"],
+["HM03 Surf","Celestic Town: após resolver o evento local, fale com a avó de Cynthia na casa importante.","solo"],
+["HM04 Strength","Lost Tower, na Route 209; para usar fora de batalha é necessária a insígnia de Byron.","solo"],
+["HM05 Defog","Great Marsh: fale com o personagem que entrega a HM dentro da área do Safari.","solo"],
+["HM06 Rock Smash","Oreburgh Gate: encontre o montanhista que entrega a HM; uso fora de batalha após Roark.","solo"],
+["HM07 Waterfall","Sunyshore City: receba de Jasmine depois de vencer Volkner.","solo"],
+["HM08 Rock Climb","Route 217: procure o item na neve perto de uma casa; uso fora de batalha requer a insígnia de Candice.","solo"],
+["Recolher TMs fixas e itens de campo","Revise rotas, cavernas, casas e áreas acessíveis com Cut/Surf/Strength/Rock Climb/Waterfall; marque cada item encontrado no mapa do jogo.","solo"],
+["Comprar TMs disponíveis em lojas","Confira os balcões de Veilstone e lojas Pokémon; estoque e preços variam por TM.","solo"],
+["Obter TMs por BP na Battle Frontier","Após desbloquear o pós-jogo, ganhe Battle Points e troque no Exchange Service Corner.","solo"],
+["Usar Dowsing Machine para itens escondidos","Pokétch: obtenha o app e toque/observe o radar enquanto explora; itens escondidos não aparecem como Poké Balls no mapa.","solo"]
+]},
+{id:"dex",name:"3 · Pokédex e captura",desc:"Registre primeiro os Pokémon vistos; depois complete capturas e evoluções. A National Dex libera conteúdo extra.",tasks:[
+["Ver os 210 Pokémon da Sinnoh Pokédex","Compare os registros do Pokédex e enfrente treinadores obrigatórios; vários registros podem ser vistos sem capturar.","solo"],
+["Obter a National Pokédex","Após ver todos os 210 Pokémon da Sinnoh Dex, fale com Professor Rowan em Sandgem Town; não é necessário capturar todos.","solo"],
+["Capturar os três lagos: Uxie, Mesprit e Azelf","Após os eventos de Spear Pillar, visite Lake Acuity, Lake Valor e Lake Verity. Mesprit foge e passa a vagar por Sinnoh.","solo"],
+["Capturar Dialga?","Em Platinum, Dialga não é encontro normal da história; depende de conteúdo/condições especiais e não deve ser presumido obtível no cartucho sozinho.","unavailable"],
+["Capturar Palkia?","Em Platinum, Palkia não é encontro normal da história; depende de conteúdo/condições especiais e não deve ser presumido obtível no cartucho sozinho.","unavailable"],
+["Capturar Giratina","História principal: Distortion World. Depois, a Griseous Orb permite manter Origin Forme fora do Distortion World.","solo"],
+["Capturar Heatran","Pós-jogo: obtenha a National Dex, vá à Survival Area/Stark Mountain e complete o evento com Buck; depois volte ao local apropriado.","solo"],
+["Capturar Regigigas","O encontro de Snowpoint Temple requer Regirock, Regice e Registeel na equipe; sem transferência/troca de jogos, o requisito pode bloquear o encontro.","conditional"],
+["Capturar Cresselia","Pós-jogo: Canalave City, casa do marinheiro; avance até Fullmoon Island e siga o rastro do Pokémon errante.","solo"],
+["Capturar Rotom","Old Chateau, à noite: interaja com a TV no horário noturno do jogo. Tenha Poké Balls e espaço na equipe.","solo"],
+["Capturar Spiritomb","Hallowed Tower na Route 209: exige Odd Keystone e interações com pessoas no Underground; sozinho, o requisito social normal não é completável sem outros jogadores.","conditional"],
+["Capturar Pokémon de enxame diário","Obtenha a National Dex e consulte a irmã de Dawn/Lucas diariamente para saber a rota do swarm.","solo"],
+["Usar Poké Radar para espécies adicionais","Receba o Poké Radar após a National Dex; use em grama apropriada e aprenda a manter cadeias sem quebrá-las.","solo"],
+["Obter Eevee","Após avançar na história, fale com Bebe em Hearthome City; outras formas de obtê-lo dependem do progresso e do jogo.","solo"],
+["Evoluir por pedras evolutivas","Procure pedras em rotas/cavernas e use-as nas espécies compatíveis; confira o método antes de gastar uma pedra rara.","solo"],
+["Evoluir por amizade","Caminhe com o Pokémon, suba níveis, use itens e evite desmaios; verifique a amizade com NPCs/apps quando disponível.","solo"],
+["Evoluir por troca (Gengar/Alakazam/Machamp/Golem etc.)","Exige troca com outro jogo/console compatível. Com apenas um DSi XL e um cartucho, não é obtível por meios normais.","conditional"],
+["Obter exclusivos de Diamond/Pearl","Algumas espécies exigem outra versão ou transferência de jogos da geração IV; não conte como captura solo garantida.","conditional"],
+["Completar National Dex: capturar/evoluir todas as espécies disponíveis","Faça listas por número, use Day-Care para ovos, evolua estágios e revise versões exclusivas, trocas e transferências.","solo"],
+["Obter os míticos por distribuição antiga","Manaphy, Phione, Darkrai, Shaymin, Arceus e outros têm requisitos especiais; distribuições oficiais antigas não estão ativas hoje.","unavailable"]
+]},
+{id:"post",name:"4 · Pós-jogo e Battle Zone",desc:"Desbloqueios após a Liga, áreas novas, missões secundárias e encontros especiais.",tasks:[
+["Desbloquear Fight Area e Battle Zone","Após o Hall of Fame, vá a Snowpoint City e use o barco para chegar à Fight Area.","solo"],
+["Explorar Survival Area","Acesse a área e os caminhos do pós-jogo; confira a casa do Move Tutor e eventos da Team Galactic.","solo"],
+["Explorar Resort Area","Desbloqueie a região e investigue a Villa e os serviços locais.","solo"],
+["Completar Stark Mountain e evento de Buck","Na Battle Zone, leve Pokémon fortes, acompanhe Buck e retorne após o evento para o encontro de Heatran.","solo"],
+["Concluir o epílogo da Team Galactic","Na Survival Area, encontre Looker e conclua a sequência envolvendo Charon após o conteúdo de Stark Mountain.","solo"],
+["Explorar Turnback Cave","Procure itens e encontre Giratina se ainda não foi capturado; a navegação depende de atravessar salas antes do limite de salas.","solo"],
+["Obter Griseous Orb","Na área apropriada do pós-jogo ligada a Giratina/Distortion World, recolha a orb para usar Origin Forme fora do mundo distorcido.","solo"],
+["Desbloquear rematches e treinadores fortes","Use áreas pós-jogo e eventos diários; registre equipes, níveis e recompensas para treino final.","solo"],
+["Completar Villa e móveis","Resort Area: use o catálogo/livreto da Villa para comprar mobiliário com dinheiro do jogo.","solo"],
+["Conhecer todos os visitantes da Villa","Avance no pós-jogo e verifique periodicamente os personagens que podem visitar a Villa.","solo"]
+]},
+{id:"frontier",name:"5 · Battle Frontier",desc:"Desafio de endgame: cinco instalações, cada uma com uma Print prateada e uma dourada.",tasks:[
+["Battle Tower — Silver Print","Vença a sequência necessária e derrote Palmer pela primeira vez na batalha de cérebro.","solo"],
+["Battle Tower — Gold Print","Continue a sequência e derrote Palmer no desafio avançado para receber a Gold Print.","solo"],
+["Battle Factory — Silver Print","Use os Pokémon alugados, construa uma estratégia com os sets oferecidos e derrote Thorton.","solo"],
+["Battle Factory — Gold Print","Vença a sequência avançada e derrote Thorton novamente.","solo"],
+["Battle Arcade — Silver Print","Gerencie os efeitos do painel de roleta e derrote Dahlia.","solo"],
+["Battle Arcade — Gold Print","Complete a sequência avançada e derrote Dahlia novamente.","solo"],
+["Battle Castle — Silver Print","Administre Castle Points, cura e recursos; derrote Darach e Caitlin.","solo"],
+["Battle Castle — Gold Print","Complete a sequência avançada com gestão eficiente de recursos.","solo"],
+["Battle Hall — Silver Print","Escolha cuidadosamente espécie e tipo de batalha; derrote Argenta.","solo"],
+["Battle Hall — Gold Print","Complete o desafio avançado e derrote Argenta novamente.","solo"],
+["Acumular Battle Points (BP)","Cada instalação recompensa BP; use-os para itens competitivos, vitaminas e TMs.","solo"],
+["Comprar todos os prémios de BP que queres colecionar","Planeje os custos: alguns itens custam dezenas de BP; registre o saldo antes de comprar.","solo"],
+["Registrar recordes e Frontier Prints","Confira o Vs. Recorder/Frontier Record para acompanhar vitórias e as cinco Prints.","solo"],
+["Vencer streaks longas em cada instalação","Objetivo opcional de maestria: registre sequências altas e equipes usadas; não é necessário para zerar a história.","solo"]
+]},
+{id:"contest",name:"6 · Super Contests, fitas e Pokémon",desc:"Conteúdo de coleção e performance; vários objetivos exigem preparação de acessórios, Poffins e movimentos.",tasks:[
+["Participar nas cinco categorias de Super Contest","Hearthome Contest Hall: Cool, Beauty, Cute, Smart e Tough.","solo"],
+["Vencer os quatro ranks de uma categoria","Normal, Great, Ultra e Master; melhore condição com Poffins e escolha movimentos adequados.","solo"],
+["Conquistar as cinco Master Ribbons de Contest","Ganhe a categoria Master nas cinco áreas com Pokémon preparados.","solo"],
+["Recolher acessórios de Contest","Ganhe em concursos, fale com NPCs e confira recompensas de eventos locais.","solo"],
+["Preparar Poffins","Use berries no Poffin House/recursos de Hearthome; combine sabores com as condições que deseja elevar.","solo"],
+["Conseguir todas as Ribbons obtíveis no cartucho","Inclua fitas de Contest, amizade, esforço, dias/serviços e Battle Tower; verifique cada método individualmente.","solo"],
+["Entrar no Ribbon Syndicate","Leve um Pokémon com pelo menos 10 tipos diferentes de Ribbon para acessar o prédio em Resort Area.","solo"],
+["Receber massagens e aumentar amizade","Veilstone e Ribbon Syndicate têm serviços diários; faça a rotina com Pokémon que evoluem por amizade.","solo"],
+["Completar acessórios e fundos de apresentação","Verifique prêmios de Contest, NPCs e itens encontrados; alguns acessórios podem ter requisitos específicos.","solo"]
+]},
+{id:"underground",name:"7 · Underground, bases e mineração",desc:"Atividades de escavação, decoração e interação local. O multiplayer normal depende de outro jogador próximo.",tasks:[
+["Receber Explorer Kit","Eterna City: fale com o Underground Man.","solo"],
+["Escavar todas as categorias de tesouros acessíveis","Explore paredes brilhantes e cave com cuidado para descobrir fósseis, shards, pedras e esferas.","solo"],
+["Desenterrar fósseis e reviver Pokémon","Use o museu de Oreburgh City para reviver os fósseis obtidos.","solo"],
+["Recolher esferas e trocar com vendedores","Negocie esferas por itens com NPCs do Underground; estoque pode variar.","solo"],
+["Criar e decorar Secret Base","Use uma Digger Drill numa parede adequada e coloque decorações na base.","solo"],
+["Completar armadilhas e decorações que não exigem troca","Recolha itens e compre decorações disponíveis; marque separadamente os itens de interação multiplayer.","solo"],
+["Jogar Capture the Flag com outro jogador","Requer conexão local com outro jogador e não é realizável sozinho com um único DSi XL.","conditional"],
+["Interagir com jogadores no Underground","A interação multiplayer local não pode ser feita sozinho; mantenha este objetivo oculto se o desafio é estritamente solo.","conditional"]
+]},
+{id:"daily",name:"8 · Rotinas diárias e locais especiais",desc:"Eventos dependentes do relógio interno, dia da semana, clima ou encontros aleatórios.",tasks:[
+["Conferir Swarm diário","Fale com a irmã de Dawn/Lucas em Sandgem e visite a rota indicada.","solo"],
+["Fazer massagens em Veilstone","Uma vez por dia: aumente a amizade e, em certas condições, receba acessórios.","solo"],
+["Visitar Trophy Garden","Na mansão Pokémon da Route 212, fale com o dono diariamente para descobrir o Pokémon especial do dia.","solo"],
+["Conferir Pokémon errantes","Mesprit e Cresselia podem vagar por Sinnoh; use o mapa do Pokétch e prepare Mean Look/ataques apropriados.","solo"],
+["Checar árvores de mel","Passe mel em árvores douradas e retorne depois de algum tempo para encontros; alguns Pokémon são raros.","solo"],
+["Explorar Great Marsh por binóculos","Observe os Pokémon disponíveis no dia e visite áreas corretas; alguns encontros variam diariamente.","solo"],
+["Conferir berries e plantar patches","Recolha, plante e regue berries em patches pelo mapa para criar estoque de Poffins e itens.","solo"],
+["Completar eventos semanais/dias específicos","Confira NPCs e serviços em dias específicos; não altere o relógio para forçar eventos se quer manter uma rotina legítima.","solo"],
+["Encontrar Drifloon","Aparece no Valley Windworks às sextas-feiras depois do evento da Team Galactic; se passou, volte numa sexta-feira do relógio do jogo.","solo"]
+]},
+{id:"items",name:"9 · Itens, Pokétch e colecionáveis",desc:"Use esta categoria como auditoria de coleção. Itens únicos podem ser perdidos ou consumidos; não gaste antes de conferir.",tasks:[
+["Obter todos os apps do Pokétch","Fale com NPCs que entregam apps, conclua desafios e revise Jubilife City; alguns apps vêm de progresso e outros de interações opcionais.","solo"],
+["Recolher todas as Poké Balls fixas do mapa","Revise cada rota, caverna, edifício e área pós-jogo; use o Dowsing Machine para itens escondidos.","solo"],
+["Recolher todos os itens escondidos","Use Dowsing Machine em rotas, cavernas, praias e salas; procure guias de mapa por área para não depender da memória.","solo"],
+["Recolher todos os itens de presente de NPCs","Converse com NPCs em casas, lojas, centros Pokémon e áreas opcionais; alguns presentes dependem de Pokémon/insígnias.","solo"],
+["Completar coleção de TMs/HMs","Revise TMs de mapa, lojas, prêmios, BP e presentes; TMs de quarta geração podem ser reutilizadas, mas quantidade e origem importam para coleção.","solo"],
+["Completar coleção de berries","Cultive e recolha berries por patches; algumas podem vir de NPCs, eventos diários ou trocas.","solo"],
+["Completar Mail e itens segurados comuns","Lojas, rotas, habilidades e Battle Frontier fornecem vários; diferencie itens que podem ser comprados dos únicos.","solo"],
+["Completar itens de evolução","Recolha pedras, itens segurados e objetos específicos de evolução; consulte o método de cada espécie antes de usar.","solo"],
+["Obter itens exclusivos de eventos antigos","Itens distribuídos em eventos oficiais já encerrados não são obtíveis pelo método original atual se não foram recebidos antes.","unavailable"],
+["Completar todas as decorações e mobiliário da Villa","Use catálogo da Villa e recompensas disponíveis; anote os preços e compre progressivamente.","solo"],
+["Completar wallpapers do PC","Fale com NPCs e cumpra requisitos específicos; alguns fundos dependem de palavras/recursos especiais.","solo"],
+["Completar Seal Case e selos de Poké Ball","Colete selos de NPCs, lojas e atividades; use-os para personalizar as animações de saída dos Pokémon.","solo"],
+["Completar Easy Chat words","Palavras vêm de progresso, NPCs e condições específicas; alguns conteúdos dependem de interações ou requisitos especiais.","solo"],
+["Completar registros do Jubilife TV","Confira salas e atividades de Jubilife TV; alguns rankings/recursos podem depender de comunicação ou requisitos que já não funcionam.","conditional"]
+]},
+{id:"battle",name:"10 · Treinadores, rematches e treino",desc:"Para quem quer dominar o jogo depois de vencer Cynthia.",tasks:[
+["Derrotar todos os treinadores opcionais acessíveis","Revise rotas, cavernas, edifícios e áreas de pós-jogo; use Vs. Seeker onde funciona para revisitar treinadores.","solo"],
+["Completar rematches de líderes e treinadores disponíveis","Alguns rematches exigem progresso no pós-jogo ou condições específicas; fale com NPCs relacionados e consulte o telefone/áreas quando aplicável.","solo"],
+["Completar rematches da Elite Four","Após avançar no pós-jogo, volte à Liga para enfrentar equipes fortalecidas.","solo"],
+["Montar equipe de Battle Frontier com EVs e nature adequadas","Treine EVs, nature, movesets e itens segurados; use vitaminas e berries que reduzem EVs se necessário.","solo"],
+["Completar todos os desafios de batalha de NPCs","Inclua batalhas especiais e instalações; mantenha uma lista de recordes e equipes para repetir estratégias.","solo"],
+["Completar a Trainer Card ao máximo possível","A Trainer Card melhora com marcos como Hall of Fame, concursos e desafios da Battle Frontier; confira estrelas e requisitos do jogo.","solo"]
+]},
+{id:"blocked",name:"11 · Bloqueados, trocas e eventos",desc:"Estes objetivos ficam separados para não contaminar a porcentagem de uma run solo legítima.",tasks:[
+["Trade evolutions sem segundo console","Machamp, Golem, Alakazam, Gengar e outras evoluções por troca exigem parceiro/segundo aparelho e outro jogo compatível.","conditional"],
+["Pokémon exclusivos de outra versão","Algumas espécies precisam de Diamond/Pearl ou de transferência; com apenas Platinum, não conte como solo garantido.","conditional"],
+["Transferir Pokémon de GBA/DS anterior","Pal Park e certos Pokémon exigem cartucho compatível de GBA ou jogos de DS; não fazem parte de uma run com só Platinum.","conditional"],
+["Usar Nintendo Wi-Fi Connection oficial","O serviço oficial de Nintendo DS foi descontinuado em 20 de maio de 2014; recursos online oficiais não estão disponíveis normalmente.","unavailable"],
+["Receber Oak's Letter / Shaymin por evento","A distribuição oficial antiga terminou. Se o item não está no save, o evento não pode ser ativado pelo método oficial normal atual.","unavailable"],
+["Receber Member Card / Darkrai por evento","A distribuição oficial antiga terminou. Sem o item no save, não é um objetivo solo legítimo pelo método original.","unavailable"],
+["Receber Azure Flute / Arceus por evento","A distribuição oficial do item para Platinum não está ativa; não conte como disponível por jogabilidade normal.","unavailable"],
+["Obter Pokémon míticos por eventos antigos","Mew, Celebi, Jirachi, Deoxys, Manaphy e outros podem exigir distribuição, jogos ou transferência externos; avalie espécie por espécie.","unavailable"],
+["Usar servidor alternativo ou exploit de evento","Pode haver métodos comunitários, mas não são distribuição oficial e podem exigir configuração/rede específica. Excluído da definição estrita de legítimo deste tracker.","unavailable"]
+]},
+{id:"reference",name:"12 · Fontes e plano de auditoria",desc:"Use referências para conferir tabelas detalhadas. A meta é ampliar o guia sem inventar localizações.",tasks:[
+["Auditar cada rota com um walkthrough por área","Use um walkthrough de Platinum e marque itens, treinadores, encontros e saídas de cada mapa, incluindo desvios opcionais.","solo"],
+["Auditar todos os Pokémon da Sinnoh Dex","Faça uma tabela de visto/capturado/evoluído e confira os métodos de evolução e locais por horário/clima.","solo"],
+["Auditar a National Dex e bloqueios","Separe obtainable in Platinum, trade-only, version-exclusive, transfer-only e event-only; não misture as categorias.","solo"],
+["Auditar formas, fitas e colecionáveis","Verifique formas alternativas, Ribbons, selos, acessórios, wallpapers, palavras e mobiliário em listas dedicadas.","solo"],
+["Fazer backup do progresso regularmente","Use Exportar backup antes de atualizar o arquivo ou trocar de navegador.","solo"]
+]}
+];
+const key="platinum100_tracker_v1";
+let saved={}; try{saved=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
+let active="story";
+const labels={solo:"Solo: possível no cartucho",conditional:"Condicional: exige ajuda/requisito externo",unavailable:"Indisponível pelo método oficial atual"};
+const nav=document.getElementById("nav"),content=document.getElementById("content");
+function allTasks(){return sections.flatMap(s=>s.tasks.map((t,i)=>({id:s.id+"_"+i,section:s.id,title:t[0],desc:t[1],type:t[2]})))}
+function visibleTasks(){let q=document.getElementById("search").value.toLowerCase().trim(),av=document.getElementById("availability").value,st=document.getElementById("status").value;return allTasks().filter(t=>{let ok=t.title.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)||sections.find(s=>s.id===t.section).name.toLowerCase().includes(q);if(!ok)return false;if(av==="solo"&&t.type!=="solo")return false;if(av==="legit"&&t.type==="unavailable")return false;if(av==="unavailable"&&t.type!=="unavailable")return false;if(st==="todo"&&saved[t.id])return false;if(st==="done"&&!saved[t.id])return false;return true})}
+function renderNav(){nav.innerHTML="";sections.forEach(s=>{let b=document.createElement("button");b.textContent=s.name;b.className=active===s.id?"active":"";b.onclick=()=>{active=s.id;render()};nav.appendChild(b)})}
+function render(){renderNav();let s=sections.find(x=>x.id===active);document.getElementById("currentTitle").textContent=s.name;document.getElementById("sectionDesc").textContent=s.desc;let filtered=visibleTasks().filter(t=>t.section===active);content.innerHTML="";let grid=document.createElement("div");grid.className="tasks";filtered.forEach(t=>{let card=document.createElement("label");card.className="task"+(saved[t.id]?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!saved[t.id];cb.onchange=()=>{saved[t.id]=cb.checked;persist();render()};let body=document.createElement("div"),title=document.createElement("div"),desc=document.createElement("div"),tag=document.createElement("span");title.className="tasktitle";title.textContent=t.title;desc.className="desc";desc.textContent=t.desc;tag.className="tag"+(t.type==="unavailable"?" off":t.type==="conditional"?" conditional":"");tag.textContent=labels[t.type];body.append(title,desc,tag);card.append(cb,body);grid.appendChild(card)});if(!filtered.length){content.innerHTML='<div class="panel">Nenhuma tarefa corresponde aos filtros nesta categoria. Limpe a busca ou altere o filtro.</div>'}else content.appendChild(grid);updateStats()}
+function persist(){try{localStorage.setItem(key,JSON.stringify(saved))}catch(e){}}
+function updateStats(){let arr=visibleTasks();document.getElementById("doneCount").textContent=arr.filter(t=>saved[t.id]).length;document.getElementById("totalCount").textContent=arr.length;let p=arr.length?Math.round(arr.filter(t=>saved[t.id]).length/arr.length*100):0;document.getElementById("percent").textContent=p+"%";document.getElementById("bar").style.width=p+"%";document.getElementById("sectionCount").textContent=sections.length}
+["search","availability","status"].forEach(id=>document.getElementById(id).addEventListener(id==="search"?"input":"change",render));
+document.getElementById("markVisible").onclick=()=>{visibleTasks().filter(t=>t.section===active).forEach(t=>saved[t.id]=true);persist();render()};
+document.getElementById("clearVisible").onclick=()=>{visibleTasks().filter(t=>t.section===active).forEach(t=>delete saved[t.id]);persist();render()};
+document.getElementById("export").onclick=()=>{let blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),progress:saved},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="pokemon-platinum-progresso.json";a.click();URL.revokeObjectURL(a.href);document.getElementById("backupMsg").textContent="Backup exportado."};
+document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
+document.getElementById("importFile").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let obj=JSON.parse(await f.text());saved=obj.progress||obj;if(typeof saved!=="object"||Array.isArray(saved))throw Error();persist();render();document.getElementById("backupMsg").textContent="Backup importado."}catch(err){document.getElementById("backupMsg").textContent="Arquivo inválido."}};
+document.getElementById("reset").onclick=()=>{if(confirm("Apagar todas as marcações deste navegador? Exporte um backup antes se quiser guardar.")){saved={};persist();render();document.getElementById("backupMsg").textContent="Progresso apagado."}};
+render();
+</script>
+</body></html>
